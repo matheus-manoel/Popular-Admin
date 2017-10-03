@@ -6,6 +6,9 @@ class UserHandler(object):
     def create_new(self, **user_dict):
         return self.models.user(**user_dict).save()
 
+    def get(self, **filters):
+        return self.models.user.objects(**filters)
+
 
 class TaskHandler(object):
 

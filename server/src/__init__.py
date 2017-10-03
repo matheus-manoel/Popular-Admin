@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import mongoengine as me
 
 from .models import create_models
-from .views import create_api_views
+from .views import create_api_views, create_users_api_views
 from .handlers import create_handlers
 
 
@@ -19,7 +19,9 @@ def create_db():
 
 def add_routes(app, request, handlers):
     api = create_api_views(handlers, request)
+    users_api = create_users_api_views(handlers, request)
     app.register_blueprint(api, url_prefix='/api/v1')
+    app.register_blueprint(users_api, url_prefix='/api/v1/users')
 
 
 def build_app():

@@ -1,4 +1,4 @@
-def create_meeting_model(me, User):
+def create_meeting_model(me):
     class Meeting(me.Document):
         type = me.StringField()
         responsible = me.ListField(me.StringField())

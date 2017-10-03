@@ -1,4 +1,6 @@
-from .user import create_user_model, create_task_model, create_meeting_model
+from .user import create_user_model
+from .task import create_task_model
+from .meeting import create_meeting_model
 
 
 def create_models(me):
