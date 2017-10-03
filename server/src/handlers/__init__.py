@@ -1,8 +1,10 @@
 from ..utils import dotdict
-from .handlers import UserHandler
+from .handlers import UserHandler, MeetingHandler, TaskHandler
 
 
 def create_handlers(models):
     return dotdict({
-        'user': UserHandler(models)
+        'user': UserHandler(models),
+        'meeting': MeetingHandler(models),
+        'task': TaskHandler(models)
     })
