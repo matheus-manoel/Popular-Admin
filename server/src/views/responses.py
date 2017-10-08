@@ -1,10 +1,11 @@
+from http import HTTPStatus
 import json
 
 
 def build_response(raw_response, created=False):
     """Build a full response"""
     if raw_response is not None:
-        status_code = 202 if created else 200
+        status_code = 201 if created else 200
     else:
         status_code = 404
     return json.dumps(raw_response), status_code, {'Content-Type': 'application/json'}
@@ -40,7 +41,7 @@ def fail(custom_message=None):
     """Return a 404 and a failure message"""
     return _assemble_response(False, custom_message, 404)
 
-
+custom_message = ''
 def forbidden(custom_message=None):
     """Return a 403 and a forbbiden message"""
     return _assemble_response(False, custom_message, 403)
@@ -49,3 +50,8 @@ def forbidden(custom_message=None):
 def unprocessable_entity(custom_message):
     """Return a 422 and a message explaining why the entity is unprocessable."""
     return _assemble_response(False, custom_message, 422)
+
+
+def unauthorized(custom_message=HTTPStatus.UNAUTHORIZED.description):
+    '''Return a 401 and a message explaining the agent was unaithorized.'''
+    return _assemble_response(False, custom_message, HTTPStatus.UNAUTHORIZED.value)
