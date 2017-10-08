@@ -1,7 +1,8 @@
 from flask import Blueprint
 from datetime import datetime
 
-from .responses import build_response, missing_required_payload_parameter
+from .responses import build_response, missing_required_payload_parameter, success
+from .responses import fail
 from .utils import get_missing_params
 
 
@@ -31,5 +32,14 @@ def get_users(handlers, request):
 
 def post_users(handlers, request):
     obligatory_params = ['name', 'username', 'password', 'email', 'role']
-    if get_missing_params(request.args, obligatory_params):
+    if get_missing_params([*request.form.keys()], obligatory_params):
         return missing_required_payload_parameter()
+
+    user, error_message = None, None
+
+    try:
+        user = handlers.user.create_new(**request.form.to_dict()).to_json()
+    except Exception as exc:
+        error_message = str(exc)
+
+    return build_response(user, created=True) if user else fail(error_message)
