@@ -5,12 +5,14 @@ import {
   FormControl,
   Input,
   Button,
-  InputAdornment
+  InputAdornment,
+  LinearProgress
 } from '@material-ui/core';
 import { Email, Lock } from '@material-ui/icons';
-
+import { firebaseConnect } from 'react-redux-firebase';
 
 import logo from '../../images/logo.jpg';
+
 
 const FormContainer = styled(Paper)`
   width: 230px;
@@ -33,6 +35,10 @@ const FormContainerWrapper = styled.div`
   height: 100%;
 `;
 
+const CustomLinearProgress = styled(LinearProgress)`
+  margin-top: 10px;
+`;
+
 class LoginPage extends Component {
   constructor(props) {
     super(props);
@@ -40,28 +46,45 @@ class LoginPage extends Component {
     this.state = {
       email: '',
       password: '',
+      loading: false,
     };
   }
 
-  handleEmailChange = event => {
+  _handleEmailChange = event => {
     this.setState({ email: event.target.value });
   }
 
-  handlePasswordChange = event => {
+  _handlePasswordChange = event => {
     this.setState({ password : event.target.value });
   }
 
+  _handleLogin = () => {
+    const { firebase } = this.props;
+    const { email, password } = this.state;
+
+    this.setState({ loading: true });
+    firebase.login({ email, password })
+      .then(a => {
+        this.setState({ loading: false });
+      })
+      .catch(e => {
+        this.setState({ loading: false });
+      });
+  }
+
   render() {
+    const { email, password, loading } = this.state;
+    console.log(loading);
     return (
         <FormContainerWrapper>
           <FormContainer>
             <CustomLogo src={logo} alt="CPLB" />
             <FormControl>
               <Input
-                id="name-simple"
+                id="email-simple"
                 placeholder="Email"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
+                value={email}
+                onChange={this._handleEmailChange}
                 style={{
                   marginBottom: '10px',
                 }}
@@ -74,10 +97,10 @@ class LoginPage extends Component {
             </FormControl>
           <FormControl>
             <Input
-              id="name-simple"
+              id="password-simple"
               placeholder="Senha"
-              value={this.state.password}
-              onChange={this.handlePasswordChange}
+              value={password}
+              onChange={this._handlePasswordChange}
               type="password"
               style={{
                 marginBottom: '40px',
@@ -88,9 +111,17 @@ class LoginPage extends Component {
                 </InputAdornment>
               }
             />
-            <Button variant="raised" color="primary">
-              Entrar
-            </Button>
+            {!loading ? ( 
+              <Button
+                variant="raised"
+                color="primary"
+                onClick={this._handleLogin}
+              >
+                Entrar
+              </Button>
+            ) : (
+              <CustomLinearProgress />
+            )}
           </FormControl>
         </FormContainer>
       </FormContainerWrapper>
@@ -98,4 +129,4 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+export default firebaseConnect()(LoginPage);

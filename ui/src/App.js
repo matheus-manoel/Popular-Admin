@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Provider } from 'react-redux';
 
-import  bgImage from './images/bg.png';
 import './App.css';
+import store from './stateManagement/store';
+import  bgImage from './images/bg.png';
 import LoginPage from './components/LoginPage';
 
 
@@ -36,9 +38,11 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <AppContent className="App">
-          <LoginPage />
-        </AppContent>
+        <Provider store={store}>
+          <AppContent className="App">
+            <LoginPage />
+          </AppContent>
+        </Provider>
       </MuiThemeProvider>
     );
   }

@@ -1,6 +1,7 @@
 import { createStore, compose } from 'redux';
 import rootReducer from './reducers';
-import { reduxFirebase } from 'react-redux-firebase';
+import { reactReduxFirebase } from 'react-redux-firebase';
+import firebase from 'firebase';
 
 
 const fbConfig = {
@@ -9,11 +10,18 @@ const fbConfig = {
   databaseURL: 'https://lima-barreto-sanca.firebaseio.com',
 }
 
-export default function configureStore (initialState, history) {
-  const createStoreWithMiddleware = compose(
-    reduxFirebase(fbConfig, { userProfile: 'users' }),
-    typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
-  )(createStore);
+firebase.initializeApp(fbConfig);
 
-  return createStoreWithMiddleware(rootReducer);
-}
+const initialState = {};
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+export default createStore(
+  rootReducer,
+  initialState,
+  composeEnhancers(
+    reactReduxFirebase(firebase, {
+      userProfile: 'users',
+      enableLoggign: true,
+    }),
+  )
+);
